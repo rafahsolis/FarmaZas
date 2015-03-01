@@ -26,6 +26,7 @@ class CategoryModel(DeclarativeBase):
     description = Column('description', String, nullable=True)
     url = Column('url', String, nullable=True)
     ID_site = Column('ID_site', String, nullable=True)
+    hash = Column('hash', String, nullable=True)
 
 class ProductModel(DeclarativeBase):
     """SQLAlchemy product model"""

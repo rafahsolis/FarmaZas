@@ -16,8 +16,8 @@ class FarmaciaFrias(Spider):
     #Para pruebas en servidor comentar lineas 16,17 descomentar lineas 18 y 19
 
     # Definicion nombre, dominios permitidos y urls de inicioi
-    name = "FarmaciaFrias"
-    local=False
+    name = "debug"
+    local= True
     if local:
         allowed_domains = ["farmaciafrias.localhost"]
         start_urls = ["http://farmaciafrias.localhost"]

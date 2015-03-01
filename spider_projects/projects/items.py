@@ -32,7 +32,7 @@ class CategoryItem(Item):
     description = Field()
     url = Field()
     ID_site = Field()
-      
+    hash = Field()      
 
 
 class ProductItem(Item):

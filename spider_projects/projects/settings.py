@@ -21,10 +21,9 @@ ITEM_PIPELINES = {
 #USER_AGENT = 'Mocilla (+http://www.yourdomain.com)'
 
 # Definicion de la base de datos mediante un diccionario
-
 DATABASE = {'drivername': 'postgres',
             'host': 'localhost', # ToDo: Input your database host
             'port': '5432', # ToDo: Input your database port
             'username': '', # ToDo: Input your database username
             'password': '', # ToDo: Input your database password
-            'database': ''}  # ToDo: Input your databas
+            'database': ''}  # ToDo: Input your database name

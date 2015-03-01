@@ -28,46 +28,94 @@ class FarmaciaFriasPipeline(object):
 
         """
         session = self.Session()
+        itemModel = False
 
+        # Comprueba el tipo de item a insertar
         if type(item) == type(CategoryItem()):
-            itemModel = CategoryModel(**item)
+            if self.hashexist(session, item):
+                self.printaction('La categoria ya existe', item)
+                session.close
+                return
+            else: 
+                itemModel = CategoryModel(**item)
+                self.conection_add_commit(session, itemModel, item)
+                self.printaction('Se introdujo el registro', item)
 
         elif type(item) == type(ProductItem()):
-            if self.hashexist(session, item['hash']):
-                exit()
-            elif self.urlexist(session, item['url']):
-                itemModel = ProductModel(**item)
-                #Borrar item con url x e insertar nuevo
+            # Si ya existe no lo inserta
+            if self.hashexist(session, item):
+                self.printaction('El producto ya existe', item)
+                session.close()
+
+            # Si existe pero ha cambiado lo actualiza
+            elif type(item) == type(ProductItem()) and self.urlexist(session, item['url']):
+                self.updateitem(session, item)
+                self.conection_add_commit(session, False, item)
+                self.printaction('Se modifico el registro', item)
             else:
                 itemModel = ProductModel(**item)
+                self.conection_add_commit(session, itemModel, item)
+                self.printaction('Se introdujo nuevo producto', item)
 
+    def conection_add_commit(self, session, itemModel, item): 
         try:
-            session.add(itemModel)
+            if itemModel:
+                session.add(itemModel)
             session.commit()
         except:
             session.rollback()
             raise
         finally:
             session.close()
+        if itemModel and item:
+            return item
 
-        return item
+    def hashexist(self, session, item):
+        # Comprueba si existe un hash
+        # incluir modo factoria
 
-    def hashexist(self, session, hash):
-        hashlist = session.execute(
-            text("SELECT * FROM productable WHERE hash=:hashtocheck"),
-            {"hashtocheck": hash}
-            )
+        if type(item) == type(CategoryItem()):
+            hashlist = session.execute(
+                text("SELECT * FROM categorytable WHERE hash=:hashtocheck"),
+                {"hashtocheck": item['hash']}
+                )
+        elif type(item) == type(ProductItem()):
+            hashlist = session.execute(
+                text("SELECT * FROM productable WHERE hash=:hashtocheck"),
+                {"hashtocheck": item['hash']}
+                )
         if hashlist.rowcount != 0:
             return True
         else:
             return False
 
     def urlexist(self, session, urltocheck):
+        #Comprueba si existe la url de un producto en la base de datos
+        #Falta añadir caso de que URL no sea buena
         urllist = session.execute(
             text("SELECT * FROM productable WHERE url=:urlcheck"),
-            {"urlcheck": urltocheck]
+            {"urlcheck": urltocheck}
             )
         if urllist.rowcount != 0:
             return True
         else:
             return False
+    def printaction(self, actionstring, item):
+        print('<--  PIPELINE DEBUG  --> ', actionstring)
+        if item:       
+            print('HASH: ', item['hash'])
+            print('name: ', item['name'])
+
+    def updateitem(self, session, item):
+        #Actualiza un item existente
+        if type(item) == type(CategoryItem()):
+            print('Building update Category')
+
+        elif type(item) == type(ProductItem()):
+            updateobj = session.execute(
+                text("UPDATE  productable SET name=:newname, price=:newprice, currency=:newcurrency, available=:newavailable, hash=:newhash WHERE url=:url"),
+                {"newname": item['name'], "newprice": item['price'], "newcurrency": item['currency'], "newavailable": item['available'], "newhash": item['hash'], "url": item['url']}
+            )
+            session.commit()
+
+

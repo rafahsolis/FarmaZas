@@ -1,0 +1,247 @@
+import scrapy
+from scrapy.spider import Spider
+
+from projects.items import SiteItem, CategoryItem, ProductItem, DescItem, imgItem
+from scrapy.contrib.loader import ItemLoader
+from scrapy.contrib.loader.processor import Join, MapCompose
+from scrapy.selector import Selector
+from scrapy.http import Request
+import re
+import hashlib
+
+class FarmaciaFrias(Spider):
+
+    #Para pruebas en servidor poner variable local = False 
+
+    # Definicion nombre, dominios permitidos y urls de inicio
+
+    findb_01= False
+    findb_02= False
+    findb_03= False
+    findb_04= False
+    findb_05= False
+    tmpCategoryItem = CategoryItem()
+
+### 1.- CAMBIAR name al nombre con el que se lanza  
+
+    name = "lastradebug"
+    local= False
+
+### 2.- CAMBIAR allowed_domains Y start_urls 
+    if local:
+        allowed_domains = ["parafarmacialastra.localhost"]
+        start_urls = ["http://parafarmacialastra.localhost"]
+    else:
+        allowed_domains = ["parafarmacialastra.es"]
+        start_urls = ["http://www.parafarmacialastra.es/tienda-online.html"]
+        rootpath = "http://www.parafarmacialastra.es"
+### 3.- CAMBIAR ID SITE
+    ID_site = u'PF0001'    
+
+### 4.- CAMBIAR category_list_xpath y product_list_xpath (DEBUG -01-)
+    category_list_xpath = '//ul[@id="VMmenu19_08546"]'
+    subcat_list_xpath = ''
+    category_name = ''
+#    product_list_xpath = '//*[@id="product_list"]/li'
+
+### 5.- OBTENER XPATHS PARA CategoryItem_fields (DEBUG -02-)
+    CategoryItem_fields = {'url': '',
+                           'name': '',
+                           'description': ''}   
+
+
+#    ProductItem_fields = {'name': 'div[@class="center_block"]/a/@title',
+#                          'price': 'div/div[@class="content_price"]/span/text()',
+#                          'currency': 'div/div[@class="content_price"]/span/text()',
+#                          'available': 'div[@class="right_block"]/div[@class="content_price"]/span[@class="availability"]/span[@class="warning_inline"]/text()',
+#                          'url': 'div[@class="center_block"]/h3/a/@href'}
+#
+    def parse(self, response):
+        """
+        Default callback used by Scrapy to process downloaded responses
+
+        @url farmaciafrias.localhost
+
+        """
+        cats_sel = Selector(response)
+#### DEBUG -01- ####
+
+#LOCALIZAR EL XPATH A LA LISTA DE CATEGORIAS
+#- START
+        self.findb_01 = True
+#        self.cat_list_xpath= '//*[@class="VMmenu menu nav"]/li'
+        self.cat_list_xpath= '//*[@class="VMmenu menu nav"]'
+        if not self.findb_01:
+            print('************* DEBUG -01- START *************')
+            print('cat_list_xpath: ', self.cat_list_xpath) 
+            print('cats_sel.xpath(self.cat_list_xpath)')
+            print(cats_sel.xpath(self.cat_list_xpath)) 
+            print('cats_sel.xpath(self.cat_list_xpath).extract()')
+            print(cats_sel.xpath(self.cat_list_xpath).extract())
+            print('************* DEBUG -01- END *************')
+            exit('DEBUG -01-')
+        else:
+            categorias = cats_sel.xpath(self.cat_list_xpath) 
+#- END
+#*AL OBTENER EL XPATH DESCOMENTAR  #*        self.cat_list_xpath = 'INTRODUCIR XPATH'
+                                   #*        self.findb01= True
+                                                       
+#### DEBUG -01- ####
+        
+#### DEBUG -02- ####
+# OBTENER LOS XPATH PARA LOS CAMPOS DE CategoryItem_fields
+#- START
+         # INTRODUCIR LOS XPATH, CUANDO ESTEN OK PONER self.finddb_02 = True
+        self.findb_02= False
+        self.findb_03= False
+        self.CategoryItem_fields['url'] = 'li/div/a/@href'
+        self.CategoryItem_fields['name'] = 'li/div/a/text()'
+        
+        if not self.findb_02:
+            print('************* DEBUG -02- START *************')
+        
+            catsdebug = categorias            
+            print('URL: ', catsdebug.xpath(self.CategoryItem_fields['url']).extract())
+            print('name', catsdebug.xpath(self.CategoryItem_fields['name']).extract())
+            print('*************  DEBUG -02- END  *************')
+            exit('DEBUG -02-')
+#-END
+#### DEBUG -02- ####
+#### DEBUG -03- ####
+
+#- START
+        elif not self.findb_03:
+            print('*************  DEBUG -03- END  *************')
+
+##############################################################################################################            
+########### yield scrapy.Request(self.rootpath + self.tmpCategoryItem['url'][0], callback=self.parse_subcats)
+##############################################################################################################
+
+            catsnochild = 'li[not(contains(@class, "hasChild"))]' 
+            catswchild = 'li[contains(@class, "hasChild")]'
+            print('CATEGORIAS SIN HIJOS')
+            print(categorias.xpath(catsnochild).extract())
+            print('CATEGORIAS CON HIJOS')
+            print(categorias.xpath(catswchild).extract())
+            print('*************  DEBUG -03- END  *************')
+        else:
+            catsnochild = 'li[not(contains(@class, "hasChild"))]'
+            catswchild = 'li[contains(@class, "hasChild")]'
+            for cats in catsnochild:
+                print(        
+
+######################################################################################################################################
+#                self.tmpCategoryItem['url'] = cats.xpath(self.CategoryItem_fields['url']).extract()
+#                self.tmpCategoryItem['name'] = cats.xpath(self.CategoryItem_fields['name']).extract()
+#                yield scrapy.Request('http://www.parafarmacialastra.es' + self.tmpCategoryItem['url'][0], callback=self.parse_subcats)
+#######################################################################################################################################
+
+#### DEBUG -0 - ####
+#- START
+# OBTENER XPATH subcat_list_xpath
+    def parse_subcats(self, response):
+        self.findb_04 = False
+        subcat_sel = Selector(response)
+#//a[starts-with(@href, '#')]
+#        self.subcat_list_xpath = '//div[@class="component"]/div/div/div/div[@class="spacer"]'
+#        self.subcat_list_xpath = 'div[starts-with(normalize-space(@class), "category ")]'
+#PRODUCTOS OK        self.subcat_list_xpath = '//div[@class="component"]/div'
+	self.subcat_list_xpath = 'div[contains(@class, "category")]'
+
+        if not self.findb_03:
+            print('************* DEBUG -04- START *************')
+            print('XPATH:')
+            print(subcat_sel.xpath(self.subcat_list_xpath))
+            print('EXTRACT')
+            print(subcat_sel.xpath(self.subcat_list_xpath).extract())
+            print('************* DEBUG -04- END *************')
+            exit('DEBUG -04-')
+        elif not self.findb_04:
+            subcategories = subcat_sel.xpath(self.subcat_list_xpath)	
+#- END
+#### DEBUG -0 - ####
+
+
+#### DEBUG -0 - ####
+# OBTENER subcategorias
+#- START
+            self.findb_05 = False 
+            subcatnamexpath= 'div/a/text()'
+            subcaturlxpath= 'div/a/@href'
+            if not self.findb_04:
+                print('************* DEBUG -04- START *************')
+                for sub in subcategories:
+                    print(sub.extract, '\n')
+                    print('Subcategorie name: ', sub.xpath(subcatnamexpath).extract())  
+                    print('Subcategorie url: ', sub.xpath(subcaturlxpath).extract())
+                print('************* DEBUG -04- END *************')
+                exit('DEBUG -04-')
+
+#- END
+#### DEBUG -05- ####
+
+
+
+#            loader = ItemLoader(CategoryItem(), selector=cats)
+
+            #Procesado de texto 
+#            loader.default_input_processor = MapCompose(unicode.strip)
+#            loader.default_output_processor = Join()
+
+#            hashseed = ''
+#            #Generar item para cada categoria
+#            for field, xpath in self.CategoryItem_fields.iteritems():
+#                loader.add_xpath(field, xpath)
+#                if not self.local:
+#                    if field == 'url':
+#                        yield scrapy.Request(cats.xpath(xpath).extract()[0], callback=self.parse_cat)
+#                hashseed = hashseed + loader.get_output_value(field)
+#            hashseed = hashseed + self.ID_site
+#            hash = hashlib.md5()
+#            hashseed = hashseed.encode('ascii', errors='xmlcharrefreplace')
+#            hash.update(hashseed)
+#            hashstring = str(hash.hexdigest())
+#            loader.add_value('hash', unicode(hashstring))
+#            loader.add_value('ID_site', self.ID_site)
+            #ADD date 
+
+            # Carga la categoria en la BD
+#            yield loader.load_item()
+#            if self.local:
+### 6-(OPCIONAL SOLO SI EN LOCAL) OBTENER ENLACE A PAGINA CATEGORIA EN LOCAL
+     
+#                yield scrapy.Request("http://farmaciafrias.localhost/382-facial.html", callback=self.parse_cat)
+
+#    def parse_cat(self, response):
+#        prod_sel = Selector(response)
+#        self.cat_name = prod_sel.xpath('//div[@class="breadcrumb"]/span[@class="navigation_page"]/text()').extract()
+#        productos = prod_sel.xpath(self.product_list_xpath)
+#        for product in productos:
+#            loader= ItemLoader(ProductItem(), selector=product)
+#            loader.add_value('ID_site', self.ID_site)
+#
+#            #Procesado del texto
+#            loader.default_input_processor = MapCompose(unicode.strip)
+#            loader.default_output_processor = Join()
+#
+#            hashseed = ''
+#            #Generar item para cada producto
+#            for field, xpath in self.ProductItem_fields.iteritems():
+#                loader.add_xpath(field, xpath)
+#                hashseed = hashseed + loader.get_output_value(field)          
+#            hash = hashlib.md5()
+#            hashseed=hashseed.encode('ascii', errors='xmlcharrefreplace')
+#            hash.update(hashseed)
+#            hashstring= str(hash.hexdigest())
+#            loader.add_value('hash', unicode(hashstring))
+#            loader.add_value('category', self.cat_name)
+#            yield loader.load_item()  
+#
+#        next = prod_sel.xpath('//div[@id="center_column"]/div[@class="content_sortPagiBar"]/div[@id="pagination_bottom"]/ul/li[@class="pagination_next"]/a/@href').extract()
+#
+#        if next:
+#            yield scrapy.Request('http://www.farmacia-frias.com' + next[0], callback=self.parse_cat)
+
+
+
+

@@ -16,21 +16,22 @@ class FarmaciaFrias(Spider):
     #Para pruebas en servidor comentar lineas 16,17 descomentar lineas 18 y 19
 
     # Definicion nombre, dominios permitidos y urls de inicioi
-    name = "FarmaciaFrias"
-    local=False
+    name = "parafarmacialastra"
+    local=True
     if local:
-        allowed_domains = ["farmaciafrias.localhost"]
-        start_urls = ["http://farmaciafrias.localhost"]
+        allowed_domains = ["parafarmacialastra.localhost"]
+        start_urls = ["http://parafarmacialastra.localhost"]
     else:
-        allowed_domains = ["farmacia-frias.com"]
-        start_urls = ["http://www.farmacia-frias.com/es/"]
+        allowed_domains = ["parafarmacialastra.es"]
+        start_urls = ["http://www.parafarmacialastra.es/tienda-online.html"]
 
-    ID_site = u'FF0001'    
-    category_list_xpath = '//*[@id="categories_block_left"]/div/ul/li'
+    ID_site = u'PL0001'    
+    category_list_xpath = '//*[@id="VMmenu98_76377"]/li'
     category_name = ''
     product_list_xpath = '//*[@id="product_list"]/li'
 
     # anadir item_fields
+    # ACTUALIZAR XPATHS
     CategoryItem_fields = {'url': 'a/@href',
                            'name': 'a/text()',
                            'description': 'a/@title'}   
