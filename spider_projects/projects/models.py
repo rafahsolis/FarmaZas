@@ -41,3 +41,4 @@ class ProductModel(DeclarativeBase):
     currency = Column('currency', String, nullable=True)
     available = Column('available', String, nullable=True)
     category = Column('category', String, nullable=True)
+    hash = Column('hash', String, nullable=True)

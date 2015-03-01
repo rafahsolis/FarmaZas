@@ -7,6 +7,7 @@ from scrapy.contrib.loader.processor import Join, MapCompose
 from scrapy.selector import Selector
 from scrapy.http import Request
 import re
+import hashlib
 
 class FarmaciaFrias(Spider):
 
@@ -16,7 +17,7 @@ class FarmaciaFrias(Spider):
 
     # Definicion nombre, dominios permitidos y urls de inicioi
     name = "FarmaciaFrias"
-    local=True
+    local=False
     if local:
         allowed_domains = ["farmaciafrias.localhost"]
         start_urls = ["http://farmaciafrias.localhost"]
@@ -85,17 +86,25 @@ class FarmaciaFrias(Spider):
             loader.default_input_processor = MapCompose(unicode.strip)
             loader.default_output_processor = Join()
 
+            hashseed = ''
             #Generar item para cada producto
             for field, xpath in self.ProductItem_fields.iteritems():
                 loader.add_xpath(field, xpath)
+                hashseed = hashseed + loader.get_output_value(field)
 
+            
+            hash = hashlib.md5()
+            hashseed=hashseed.encode('ascii', errors='xmlcharrefreplace')
+            hash.update(hashseed)
+            hashstring= str(hash.hexdigest())
+            loader.add_value('hash', unicode(hashstring))
             loader.add_value('category', self.cat_name)
             yield loader.load_item()  
 
         next = prod_sel.xpath('//div[@id="center_column"]/div[@class="content_sortPagiBar"]/div[@id="pagination_bottom"]/ul/li[@class="pagination_next"]/a/@href').extract()
 
-#        if next:
-#            yield scrapy.Request(next[0], callback=self.parse_cat)
+        if next:
+            yield scrapy.Request('http://www.farmacia-frias.com' + next[0], callback=self.parse_cat)
 
 
 

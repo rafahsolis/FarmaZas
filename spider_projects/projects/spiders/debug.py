@@ -6,7 +6,9 @@ from scrapy.contrib.loader import ItemLoader
 from scrapy.contrib.loader.processor import Join, MapCompose
 from scrapy.selector import Selector
 from scrapy.http import Request
+from models import ProductModel
 import re
+import hashlib
 
 class FarmaciaFrias(Spider):
 
@@ -16,7 +18,7 @@ class FarmaciaFrias(Spider):
 
     # Definicion nombre, dominios permitidos y urls de inicioi
     name = "debug"
-    local=True
+    local=False
     if local:
         allowed_domains = ["farmaciafrias.localhost"]
         start_urls = ["http://farmaciafrias.localhost"]
@@ -34,7 +36,8 @@ class FarmaciaFrias(Spider):
                            'name': 'a/text()',
                            'description': 'a/@title'}   
 
-    ProductItem_fields = {'name': 'div/h3/a/text()',
+
+    ProductItem_fields = {'name': 'div[@class="center_block"]/a/@title',
                           'price': 'div/div[@class="content_price"]/span/text()',
                           'currency': 'div/div[@class="content_price"]/span/text()',
                           'available': 'div[@class="right_block"]/div[@class="content_price"]/span[@class="availability"]/span[@class="warning_inline"]/text()'}
@@ -84,25 +87,29 @@ class FarmaciaFrias(Spider):
             loader.default_input_processor = MapCompose(unicode.strip)
             loader.default_output_processor = Join()
 
+            hashseed = ''
             #Generar item para cada producto
             for field, xpath in self.ProductItem_fields.iteritems():
-                if field == 'name':
-                    hashsource
-                field == 'price':
-                    hashsource = hashsource.Join(product.xpath().extract()[0])
                 loader.add_xpath(field, xpath)
+                hashseed = hashseed + loader.get_output_value(field)
 
-############# DEBUG
-             
-#            print(product.xpath('div[@class="center_block"]/a/@title').extract())
-            exit()
+            
+            hash = hashlib.md5()
+            hashseed=hashseed.encode('ascii', errors='xmlcharrefreplace')
+            hash.update(hashseed)
+            hashstring= str(hash.hexdigest())
+            loader.add_value('hash', unicode(hashstring))
             loader.add_value('category', self.cat_name)
             yield loader.load_item()  
-
+            productModel = ProductModel()
+            #existe = productModel.query.get(unicode(hashstring))
+            print("----------------------------------------------------")
+            print(existe)
+            exit()
         next = prod_sel.xpath('//div[@id="center_column"]/div[@class="content_sortPagiBar"]/div[@id="pagination_bottom"]/ul/li[@class="pagination_next"]/a/@href').extract()
 
-#        if next:
-#            yield scrapy.Request(next[0], callback=self.parse_cat)
+        if next:
+            yield scrapy.Request('http://www.farmacia-frias.com' + next[0], callback=self.parse_cat)
 
 
 

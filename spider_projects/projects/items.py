@@ -49,7 +49,7 @@ class ProductItem(Item):
     currency = Field()
     available = Field()
     category = Field()
-
+    hash = Field()
 
 class DescItem(Item):
     """Product container (dictionary-like object) for scraped data

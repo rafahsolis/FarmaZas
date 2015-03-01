@@ -18,11 +18,13 @@ ITEM_PIPELINES = {
     }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'Mozilla (+http://www.yourdomain.com)'
+#USER_AGENT = 'Mocilla (+http://www.yourdomain.com)'
+
+# Definicion de la base de datos mediante un diccionario
 
 DATABASE = {'drivername': 'postgres',
-            'host': '', # ToDo: Input your database host
-            'port': '', # ToDo: Input your database port
+            'host': 'localhost', # ToDo: Input your database host
+            'port': '5432', # ToDo: Input your database port
             'username': '', # ToDo: Input your database username
             'password': '', # ToDo: Input your database password
-            'database': ''} # ToDo: Input your database name
+            'database': ''}  # ToDo: Input your database name
