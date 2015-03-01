@@ -17,7 +17,7 @@ class FarmaciaFrias(Spider):
 
     # Definicion nombre, dominios permitidos y urls de inicioi
     name = "FarmaciaFrias"
-    local=False
+    local=True
     if local:
         allowed_domains = ["farmaciafrias.localhost"]
         start_urls = ["http://farmaciafrias.localhost"]
@@ -39,7 +39,8 @@ class FarmaciaFrias(Spider):
     ProductItem_fields = {'name': 'div[@class="center_block"]/a/@title',
                           'price': 'div/div[@class="content_price"]/span/text()',
                           'currency': 'div/div[@class="content_price"]/span/text()',
-                          'available': 'div[@class="right_block"]/div[@class="content_price"]/span[@class="availability"]/span[@class="warning_inline"]/text()'}
+                          'available': 'div[@class="right_block"]/div[@class="content_price"]/span[@class="availability"]/span[@class="warning_inline"]/text()',
+                          'url': 'div[@class="center_block"]/h3/a/@href'}
 
     def parse(self, response):
         """
@@ -103,8 +104,8 @@ class FarmaciaFrias(Spider):
 
         next = prod_sel.xpath('//div[@id="center_column"]/div[@class="content_sortPagiBar"]/div[@id="pagination_bottom"]/ul/li[@class="pagination_next"]/a/@href').extract()
 
-        if next:
-            yield scrapy.Request('http://www.farmacia-frias.com' + next[0], callback=self.parse_cat)
+#        if next:
+#            yield scrapy.Request('http://www.farmacia-frias.com' + next[0], callback=self.parse_cat)
 
 
 

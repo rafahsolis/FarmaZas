@@ -6,7 +6,6 @@ from scrapy.contrib.loader import ItemLoader
 from scrapy.contrib.loader.processor import Join, MapCompose
 from scrapy.selector import Selector
 from scrapy.http import Request
-from models import ProductModel
 import re
 import hashlib
 
@@ -18,7 +17,7 @@ class FarmaciaFrias(Spider):
 
     # Definicion nombre, dominios permitidos y urls de inicioi
     name = "debug"
-    local=False
+    local=True
     if local:
         allowed_domains = ["farmaciafrias.localhost"]
         start_urls = ["http://farmaciafrias.localhost"]
@@ -93,7 +92,10 @@ class FarmaciaFrias(Spider):
                 loader.add_xpath(field, xpath)
                 hashseed = hashseed + loader.get_output_value(field)
 
-            
+            print('*******************************************')
+            print(product.xpath('div[@class="center_block"]/h3/a/@href').extract())
+            exit()
+
             hash = hashlib.md5()
             hashseed=hashseed.encode('ascii', errors='xmlcharrefreplace')
             hash.update(hashseed)
@@ -101,15 +103,11 @@ class FarmaciaFrias(Spider):
             loader.add_value('hash', unicode(hashstring))
             loader.add_value('category', self.cat_name)
             yield loader.load_item()  
-            productModel = ProductModel()
-            #existe = productModel.query.get(unicode(hashstring))
-            print("----------------------------------------------------")
-            print(existe)
-            exit()
+
         next = prod_sel.xpath('//div[@id="center_column"]/div[@class="content_sortPagiBar"]/div[@id="pagination_bottom"]/ul/li[@class="pagination_next"]/a/@href').extract()
 
-        if next:
-            yield scrapy.Request('http://www.farmacia-frias.com' + next[0], callback=self.parse_cat)
+#        if next:
+#            yield scrapy.Request('http://www.farmacia-frias.com' + next[0], callback=self.parse_cat)
 
 
 
