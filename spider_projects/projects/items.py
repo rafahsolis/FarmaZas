@@ -43,6 +43,7 @@ class ProductItem(Item):
     name = Field()
     ID_site = Field()
     ID_desc = Field()
+    url = Field()
     date_in = Field()
     date_mod = Field()
     price = Field()

@@ -34,6 +34,7 @@ class ProductModel(DeclarativeBase):
     ID_product = Column(Integer, primary_key=True)
     name = Column('name', String, nullable=True)
     ID_site = Column('ID_site', String, nullable=True)
+    url = Column('url', String, nullable=True)
     ID_desc = Column('ID_desc', String, nullable=True)
     date_in = Column('date_in', String, nullable=True)
     date_mod = Column('date_mod', String, nullable=True)

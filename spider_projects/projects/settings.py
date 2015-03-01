@@ -27,4 +27,4 @@ DATABASE = {'drivername': 'postgres',
             'port': '5432', # ToDo: Input your database port
             'username': '', # ToDo: Input your database username
             'password': '', # ToDo: Input your database password
-            'database': ''}  # ToDo: Input your database name
+            'database': ''}  # ToDo: Input your databas
