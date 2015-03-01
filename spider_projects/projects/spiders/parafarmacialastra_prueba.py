@@ -24,7 +24,7 @@ class ParaFarmaciaLastra(Spider):
     findb_05= True
 ### 1.- CAMBIAR name al nombre con el que se lanza  
 
-    name = "lastradebug"
+    name = "prueba"
     local= False
 
 ### 2.- CAMBIAR allowed_domains Y start_urls 

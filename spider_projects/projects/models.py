@@ -24,6 +24,7 @@ class CategoryModel(DeclarativeBase):
     ID_category = Column(Integer, primary_key=True)
     name = Column('name', String)
     description = Column('description', String, nullable=True)
+    parent = Column('parent', String, nullable=True)
     url = Column('url', String, nullable=True)
     ID_site = Column('ID_site', String, nullable=True)
     hash = Column('hash', String, nullable=True)
@@ -43,4 +44,5 @@ class ProductModel(DeclarativeBase):
     currency = Column('currency', String, nullable=True)
     available = Column('available', String, nullable=True)
     category = Column('category', String, nullable=True)
+    subcategory = Column('subcat', String, nullable=True)
     hash = Column('hash', String, nullable=True)

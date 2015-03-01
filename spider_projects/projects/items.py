@@ -30,6 +30,7 @@ class CategoryItem(Item):
     ID_category = Field()
     name = Field()
     description = Field()
+    parent = Field()
     url = Field()
     ID_site = Field()
     hash = Field()      
@@ -38,7 +39,7 @@ class CategoryItem(Item):
 class ProductItem(Item):
     """Product container (dictionary-like object) for scraped data
        Fields: ID_product, name, ID_site, ID_desc, date_in, date_mod, price, currency, available, 
-       country, city, postalcode, category"""
+       country, city, postalcode, category, subcategory, hash"""
     ID_product = Field()
     name = Field()
     ID_site = Field()
@@ -50,6 +51,7 @@ class ProductItem(Item):
     currency = Field()
     available = Field()
     category = Field()
+    subcategory = Field()
     hash = Field()
 
 class DescItem(Item):

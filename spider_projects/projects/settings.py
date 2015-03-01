@@ -8,13 +8,13 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'FarmaciaFrias'
+BOT_NAME = 'FarmaTor'
 
 SPIDER_MODULES = ['projects.spiders']
 NEWSPIDER_MODULE = 'projects.spiders'
 
 ITEM_PIPELINES = {
-    'projects.pipelines.FarmaciaFriasPipeline': 300,
+    'projects.pipelines.farmator': 300,
     }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -27,3 +27,4 @@ DATABASE = {'drivername': 'postgres',
             'username': '', # ToDo: Input your database username
             'password': '', # ToDo: Input your database password
             'database': ''}  # ToDo: Input your database name
+

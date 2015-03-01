@@ -10,7 +10,7 @@ from models import CategoryModel, db_connect, create_category_table, ProductMode
 from items import CategoryItem, ProductItem
 from sqlalchemy import text
 
-class FarmaciaFriasPipeline(object):
+class farmator(object):
     """FarmaciaFrias pipeline for storing scraped items in the database"""
     def __init__(self):
         """
@@ -34,7 +34,7 @@ class FarmaciaFriasPipeline(object):
         if type(item) == type(CategoryItem()):
             if self.hashexist(session, item):
                 self.printaction('La categoria ya existe', item)
-                session.close
+                session.close()
                 return
             else: 
                 itemModel = CategoryModel(**item)

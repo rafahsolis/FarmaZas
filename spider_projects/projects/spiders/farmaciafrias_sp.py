@@ -88,6 +88,7 @@ class FarmaciaFrias(Spider):
         productos = prod_sel.xpath(self.product_list_xpath)
         for product in productos:
             loader= ItemLoader(ProductItem(), selector=product)
+# ID_site NO SE ESTA CARGANDO EN EL HASH ARREGLAR
             loader.add_value('ID_site', self.ID_site)
 
             #Procesado del texto
