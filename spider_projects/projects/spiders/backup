@@ -1,0 +1,62 @@
+import scrapy
+from scrapy.spider import Spider
+
+from projects.items import SiteItem, CategoryItem, ProductItem, DescItem, imgItem
+from scrapy.contrib.loader import ItemLoader
+from scrapy.contrib.loader.processor import Join, MapCompose
+from scrapy.selector import Selector
+
+class FarmaciaFrias(Spider):
+    """Spider for regularly updated www.farmacia-frias.com/es/ site"""
+
+    # Definicion nombre, dominios permitidos y urls de inicio
+    name = "FarmaciaFrias"
+    allowed_domains = ["localhost"]
+    start_urls = ["http://farmaciafrias.localhost/"]
+
+    # anadir item_fields
+    CategoryItem_fields = {'url': './/a/@href',
+                           'name': './/a/text()',
+                           'description': './/a/@title'
+                            }   
+
+
+    def parse(self, response):
+        """
+        Default callback used by Scrapy to process downloaded responses
+
+        @url farmaciafrias.localhost
+
+        """
+        cats_sel = Selector(response)
+        categorias = cats_sel.xpath('//*[@id="categories_block_left"]/div/ul/li')
+
+        # Recorre las categorias extrayendo informacion
+        for cats in categorias:
+            item = CategoryItem()
+            item['ID_site'] = 1000
+
+
+            item['url'] = cats.xpath('a/@href').extract()
+            item['name'] = cats.xpath('a/text()').extract()
+            item['description'] = cats.xpath('a/@title').extract()
+
+            # Carga la categoria NOT WORKING
+            loader = ItemLoader(item)
+            yield loader.load_item()
+
+            #return scrapy.Request(link[0], callback=self.parse_category)
+
+
+    # Procesar los items dentro de la categoria
+    def parse_category(self, response):
+        cat_sel = Selector(response)
+        categoria = cat_sel.xpath('//')
+        print('LO INTENTO: ', categoria)    
+    
+
+
+
+
+# response_cat contiene el response de la categoria
+
