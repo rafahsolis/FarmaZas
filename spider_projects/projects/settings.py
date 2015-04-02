@@ -8,23 +8,23 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'FarmaTor'
+BOT_NAME = 'FarmaZas'
 
 SPIDER_MODULES = ['projects.spiders']
 NEWSPIDER_MODULE = 'projects.spiders'
 
 ITEM_PIPELINES = {
-    'projects.pipelines.farmator': 300,
+    'projects.pipelines.farmaTor': 300,
     }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'Mocilla (+http://www.yourdomain.com)'
-
+USER_AGENT = 'Mocilla (http://www.yourdomain.com)'
 # Definicion de la base de datos mediante un diccionario
-DATABASE = {'drivername': 'postgres',
-            'host': 'localhost', # ToDo: Input your database host
-            'port': '5432', # ToDo: Input your database port
-            'username': '', # ToDo: Input your database username
-            'password': '', # ToDo: Input your database password
-            'database': ''}  # ToDo: Input your database name
 
+#@Warning: Database must be set
+DATABASE = {'drivername': 'postgres',
+            'host': 'DATABASE_HOST',
+            'port': 'DATABASE_PORT',
+            'username': 'DATABASE USERNAME',
+            'password': 'DATABASE_PASWWORD',
+            'database': 'DATABASE_NAME'}

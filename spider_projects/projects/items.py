@@ -5,69 +5,100 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
 from scrapy.item import Item, Field
+from scrapy.contrib.loader.processor import MapCompose, Join
+
+def integer_to_string(value):
+    a = unicode(str(value))
+    return unicode(value)
+
+def string_to_integer(value):
+    return int(value)
+
 
 class SiteItem(Item):
     """Sites container (dictionary-like object) for scraped data
-       Fields: ID_site, URL, name, status, date_in, date_check, date_scraped, check_spName,
+       Fields: id_site, URL, name, status, date_in, date_check, date_scraped, check_spName,
        scrap_DescName."""
-    ID_site = Field()
-    URL = Field()
+    id = Field(input_processor=MapCompose(integer_to_string), output_processor=string_to_integer)
     name = Field()
-    status = Field()
+    url = Field()
     date_in = Field()
-    date_check = Field()
-    date_scraped = Field()
-    check_spName = Field()
-    scrap_spName = Field()
-    scrap_DescName = Field()
+    sp1_name = Field()
+    sp1_status = Field()
+    sp2_name = Field()
+    sp2_status = Field()
+    check_spname = Field()
+    last_update = Field()
+    error_log = Field()
+    hash = Field()
+    cp = Field()
+    ciudad = Field()
+    provincia = Field()
+    pais = Field()
+    guardias = Field()
+    street = Field()
+    hash = Field()
 
 
 class CategoryItem(Item):
     """Sites container (dictionary-like object) for scraped data
-       Fields: ID_category, name, description, url, ID_site"""
-    ID_category = Field()
+       Fields: ID_category, name, description, url, id_site"""
+    id = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
+    id_site = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
     name = Field()
     description = Field()
     parent = Field()
     url = Field()
-    ID_site = Field()
     hash = Field()      
 
 
 class ProductItem(Item):
     """Product container (dictionary-like object) for scraped data
-       Fields: ID_product, name, ID_site, ID_desc, date_in, date_mod, price, currency, available, 
+       Fields: ID_product, name, id_site, ID_desc, date_in, date_mod, price, currency, available, 
        country, city, postalcode, category, subcategory, hash"""
-    ID_product = Field()
+    id = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
+    id_category = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
+    id_site = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
+    id_desc = Field()
     name = Field()
-    ID_site = Field()
-    ID_desc = Field()
     url = Field()
     date_in = Field()
     date_mod = Field()
     price = Field()
     currency = Field()
     available = Field()
-    category = Field()
-    subcategory = Field()
+    categoryname = Field() #eliminar (id_category)
+    subcategory = Field() #eliminar (id_category)
+    cn = Field()
     hash = Field()
 
-class DescItem(Item):
+
+class DescriptionItem(Item):
     """Product container (dictionary-like object) for scraped data
        Fields: ID_desc, text, ID_product, desc_date, desc_type"""
-    ID_desc = Field()
-    text = Field()
-    ID_product = Field()
+    id = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
+    id_product = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
+    titulo = Field()
+    subtitulo = Field()
+    texto = Field()
+    producturl = Field()
     desc_date = Field()
     desc_type = Field()
+    id_site = Field()
+    hash = Field()
 
 
-class imgItem(Item):
+class ImgItem(Item):
     """Product container (dictionary-like object) for scraped data
        Fields: ID_img, ID_product, URL_ext, URL_int"""
-    ID_img = Field()
-    ID_product = Field()
-    URL_ext = Field()
-    URL_int = Field()
+
+    id = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
+    id_product = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
+    id_site = Field(input_processor=MapCompose(integer_to_string), output_processor=MapCompose(string_to_integer))
+    producturl = Field()
+    size = Field()
+    source_url = Field()
+    internal_url = Field()
+    img_type = Field()
+    hash = Field()
