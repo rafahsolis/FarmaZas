@@ -79,7 +79,6 @@ class SiteModel(DeclarativeBase):
     check_spname = Column('check_spname', String, nullable=True)
     last_update = Column('last_update', String, nullable=True)
     error_log = Column('error_log', String, nullable=True)
-    hash = Column('hash', String, nullable=True)
     cp = Column('cp', String, nullable=True)
     ciudad = Column('ciudad', String, nullable=True)
     provincia = Column('provincia', String, nullable=True)
